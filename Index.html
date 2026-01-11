@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business360 - Prijs Calculator</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; padding: 40px; }
+        .calculator-card { max-width: 500px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin: auto; }
+        h2 { color: #002e5b; text-align: center; border-bottom: 2px solid #d4af37; padding-bottom: 10px; }
+        .option-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; }
+        select, input[type="number"] { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; }
+        .checkbox-group { display: flex; align-items: center; margin-bottom: 10px; cursor: pointer; }
+        .checkbox-group input { margin-right: 15px; transform: scale(1.2); }
+        .result-box { background: #002e5b; color: white; padding: 20px; border-radius: 8px; margin-top: 25px; text-align: center; }
+        .price-tag { font-size: 2em; font-weight: bold; color: #d4af37; display: block; }
+        .savings { font-size: 0.9em; color: #a5c7ff; font-style: italic; }
+        .disclaimer { font-size: 0.7em; margin-top: 15px; color: #666; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="calculator-card">
+    <h2>Business360 Calculator</h2>
+    
+    <div class="option-group">
+        <label>Boekhouding & Liaison</label>
+        <select id="finance" onchange="calculate()">
+            <option value="99">Ik heb al een boekhouder (Liaison €99)</option>
+            <option value="199">Business360 doet mijn boekhouding (€199)</option>
+            <option value="0">Geen financiële diensten (€0)</option>
+        </select>
+    </div>
+
+    <div class="checkbox-group">
+        <input type="checkbox" id="legal" onchange="calculate()">
+        <label for="legal">Legal & Compliance (+€149)</label>
+    </div>
+
+    <div class="checkbox-group">
+        <input type="checkbox" id="incasso" onchange="calculate()">
+        <label for="incasso">Incasso Service (+€49)</label>
+    </div>
+
+    <div class="option-group">
+        <label>Aantal medewerkers (HR & Payroll)</label>
+        <input type="number" id="staff" value="0" min="0" oninput="calculate()">
+        <small>€15 per medewerker p/m</small>
+    </div>
+
+    <div class="result-box">
+        Jouw 360-tarief per maand:
+        <span class="price-tag" id="totalPrice">€99</span>
+        <span class="savings" id="savingsText">Besparing t.o.v. losse diensten: ± €150 p/m</span>
+    </div>
+
+    <p class="disclaimer">Prijzen zijn indicatief en exclusief BTW.</p>
+</div>
+
+<script>
+    function calculate() {
+        // Waardes ophalen
+        let financePrice = parseInt(document.getElementById('finance').value);
+        let legalPrice = document.getElementById('legal').checked ? 149 : 0;
+        let incassoPrice = document.getElementById('incasso').checked ? 49 : 0;
+        let staffCount = parseInt(document.getElementById('staff').value) || 0;
+        let hrPrice = staffCount * 15;
+
+        // Totaal berekenen
+        let total = financePrice + legalPrice + incassoPrice + hrPrice;
+        
+        // Marktwaarde schatting (simpele factor van 1.8x jouw prijs)
+        let marketValue = (financePrice * 1.5) + (legalPrice * 2) + (incassoPrice * 1.5) + (hrPrice * 1.2);
+        let savings = Math.round(marketValue - total);
+
+        // Update UI
+        document.getElementById('totalPrice').innerText = "€" + total;
+        document.getElementById('savingsText').innerText = "Besparing t.o.v. losse diensten: ± €" + (savings > 0 ? savings : 0) + " p/m";
+    }
+</script>
+
+</body>
+</html>
