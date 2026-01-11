@@ -3,82 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business360 - Prijs Calculator</title>
+    <title>Business360 - Service Configurator</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; padding: 40px; }
-        .calculator-card { max-width: 500px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin: auto; }
-        h2 { color: #002e5b; text-align: center; border-bottom: 2px solid #d4af37; padding-bottom: 10px; }
-        .option-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; }
-        select, input[type="number"] { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; }
-        .checkbox-group { display: flex; align-items: center; margin-bottom: 10px; cursor: pointer; }
-        .checkbox-group input { margin-right: 15px; transform: scale(1.2); }
-        .result-box { background: #002e5b; color: white; padding: 20px; border-radius: 8px; margin-top: 25px; text-align: center; }
-        .price-tag { font-size: 2em; font-weight: bold; color: #d4af37; display: block; }
-        .savings { font-size: 0.9em; color: #a5c7ff; font-style: italic; }
-        .disclaimer { font-size: 0.7em; margin-top: 15px; color: #666; text-align: center; }
+        :root { --primary: #002e5b; --accent: #d4af37; --bg: #f8f9fa; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #333; padding: 20px; }
+        .container { max-width: 800px; margin: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        h2 { color: var(--primary); margin-top: 0; display: flex; justify-content: space-between; }
+        .tab-btn { cursor: pointer; font-size: 0.8em; opacity: 0.5; }
+        .option { margin-bottom: 15px; padding: 10px; border: 1px solid #eee; border-radius: 8px; }
+        .result-card { background: var(--primary); color: white; position: sticky; top: 20px; height: fit-content; }
+        .price { font-size: 2.5em; color: var(--accent); font-weight: bold; }
+        .admin-panel { display: none; background: #eee; padding: 15px; border-radius: 10px; grid-column: span 2; }
+        input[type="number"] { width: 60px; padding: 5px; }
+        .hidden { display: none; }
+        @media (max-width: 600px) { .container { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-<div class="calculator-card">
-    <h2>Business360 Calculator</h2>
-    
-    <div class="option-group">
-        <label>Boekhouding & Liaison</label>
-        <select id="finance" onchange="calculate()">
-            <option value="99">Ik heb al een boekhouder (Liaison €99)</option>
-            <option value="199">Business360 doet mijn boekhouding (€199)</option>
-            <option value="0">Geen financiële diensten (€0)</option>
-        </select>
+<div class="container">
+    <div class="card">
+        <h2>Diensten <span class="tab-btn" onclick="toggleAdmin()">⚙️ Admin</span></h2>
+        
+        <div class="option">
+            <strong>Finance & Liaison</strong><br>
+            <input type="radio" name="fin" value="liaison" id="f1" checked onchange="calc()"> <label for="f1">Eigen boekhouder (Liaison)</label><br>
+            <input type="radio" name="fin" value="full" id="f2" onchange="calc()"> <label for="f2">Volledige Boekhouding</label>
+        </div>
+
+        <div class="option">
+            <strong>Legal & Compliance</strong><br>
+            <input type="checkbox" id="c_legal" onchange="calc()"> <label for="c_legal">Legal Support & Contracten</label>
+        </div>
+
+        <div class="option">
+            <strong>Debt Recovery</strong><br>
+            <input type="checkbox" id="c_incasso" onchange="calc()"> <label for="c_incasso">Onbeperkt Incasso Service</label>
+        </div>
+
+        <div class="option">
+            <strong>Human Capital (HR)</strong><br>
+            Aantal medewerkers: <input type="number" id="staff" value="0" min="0" oninput="calc()">
+        </div>
     </div>
 
-    <div class="checkbox-group">
-        <input type="checkbox" id="legal" onchange="calculate()">
-        <label for="legal">Legal & Compliance (+€149)</label>
+    <div class="card result-card">
+        <h3>Jouw 360 Maandtarief</h3>
+        <div class="price" id="totalDisplay">€0</div>
+        <p id="savingsDisplay">Selecteer diensten voor besparing</p>
+        <hr>
+        <small>Inclusief: <span id="summary">Geen diensten</span></small>
     </div>
 
-    <div class="checkbox-group">
-        <input type="checkbox" id="incasso" onchange="calculate()">
-        <label for="incasso">Incasso Service (+€49)</label>
+    <div id="admin" class="admin-panel">
+        <h3>Prijsinstellingen (Internal Only)</h3>
+        Liaison: €<input type="number" id="p_liaison" value="99" oninput="calc()"><br>
+        Full Accounting: €<input type="number" id="p_full" value="199" oninput="calc()"><br>
+        Legal: €<input type="number" id="p_legal" value="149" oninput="calc()"><br>
+        Incasso: €<input type="number" id="p_incasso" value="49" oninput="calc()"><br>
+        HR per medewerker: €<input type="number" id="p_hr" value="15" oninput="calc()">
     </div>
-
-    <div class="option-group">
-        <label>Aantal medewerkers (HR & Payroll)</label>
-        <input type="number" id="staff" value="0" min="0" oninput="calculate()">
-        <small>€15 per medewerker p/m</small>
-    </div>
-
-    <div class="result-box">
-        Jouw 360-tarief per maand:
-        <span class="price-tag" id="totalPrice">€99</span>
-        <span class="savings" id="savingsText">Besparing t.o.v. losse diensten: ± €150 p/m</span>
-    </div>
-
-    <p class="disclaimer">Prijzen zijn indicatief en exclusief BTW.</p>
 </div>
 
 <script>
-    function calculate() {
-        // Waardes ophalen
-        let financePrice = parseInt(document.getElementById('finance').value);
-        let legalPrice = document.getElementById('legal').checked ? 149 : 0;
-        let incassoPrice = document.getElementById('incasso').checked ? 49 : 0;
-        let staffCount = parseInt(document.getElementById('staff').value) || 0;
-        let hrPrice = staffCount * 15;
+    function toggleAdmin() {
+        let pass = prompt("Wachtwoord?");
+        if(pass === "360") {
+            document.getElementById('admin').style.display = 'block';
+        }
+    }
 
-        // Totaal berekenen
-        let total = financePrice + legalPrice + incassoPrice + hrPrice;
-        
-        // Marktwaarde schatting (simpele factor van 1.8x jouw prijs)
-        let marketValue = (financePrice * 1.5) + (legalPrice * 2) + (incassoPrice * 1.5) + (hrPrice * 1.2);
-        let savings = Math.round(marketValue - total);
+    function calc() {
+        // Prijzen uit admin halen
+        let p_liaison = parseInt(document.getElementById('p_liaison').value);
+        let p_full = parseInt(document.getElementById('p_full').value);
+        let p_legal = parseInt(document.getElementById('p_legal').value);
+        let p_incasso = parseInt(document.getElementById('p_incasso').value);
+        let p_hr = parseInt(document.getElementById('p_hr').value);
+
+        let total = 0;
+        let market = 0;
+        let items = [];
+
+        // Finance check
+        if(document.getElementById('f1').checked) {
+            total += p_liaison;
+            market += 150;
+            items.push("Liaison Service");
+        } else {
+            total += p_full;
+            market += 300;
+            items.push("Accounting");
+        }
+
+        // Legal check
+        if(document.getElementById('c_legal').checked) {
+            total += p_legal;
+            market += 400;
+            items.push("Legal");
+        }
+
+        // Incasso check
+        if(document.getElementById('c_incasso').checked) {
+            total += p_incasso;
+            market += 100;
+            items.push("Incasso");
+        }
+
+        // HR check
+        let staff = parseInt(document.getElementById('staff').value) || 0;
+        if(staff > 0) {
+            total += (staff * p_hr);
+            market += (staff * 25);
+            items.push("HR (" + staff + " pers.)");
+        }
 
         // Update UI
-        document.getElementById('totalPrice').innerText = "€" + total;
-        document.getElementById('savingsText').innerText = "Besparing t.o.v. losse diensten: ± €" + (savings > 0 ? savings : 0) + " p/m";
+        document.getElementById('totalDisplay').innerText = "€" + total;
+        document.getElementById('summary').innerText = items.join(", ");
+        let savings = market - total;
+        document.getElementById('savingsDisplay').innerText = "Besparing t.o.v. markt: €" + (savings > 0 ? savings : 0) + " p/m";
     }
+    calc(); // Startberekening
 </script>
-
 </body>
 </html>
+
