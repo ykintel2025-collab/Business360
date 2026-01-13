@@ -3,154 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business360 - Uw Zakelijke Partner</title>
+    <title>Business360 - Uw Operatie, Onze Zorg</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #002e5b; --accent: #d4af37; --bg: #f4f7f9; --text: #333; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; margin: 0; padding: 20px; }
         .wrapper { max-width: 1100px; margin: auto; }
         header { text-align: center; margin-bottom: 40px; }
-        h1 { color: var(--primary); font-weight: 700; margin-bottom: 10px; }
+        h1 { color: var(--primary); font-weight: 700; margin-bottom: 5px; }
         .admin-trigger { cursor: pointer; color: #ccc; font-size: 12px; text-decoration: none; }
 
         .configurator { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
         .card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); border: 1px solid #eef; }
         
-        .section-title { font-size: 1.2em; font-weight: 700; color: var(--primary); margin-bottom: 15px; border-left: 4px solid var(--accent); padding-left: 15px; }
-        .service-desc { font-size: 0.9em; color: #666; margin-bottom: 15px; display: block; }
+        .section-title { font-size: 1.1em; font-weight: 700; color: var(--primary); margin-bottom: 10px; border-left: 4px solid var(--accent); padding-left: 15px; display: flex; align-items: center; }
+        .service-desc { font-size: 0.85em; color: #666; margin-bottom: 15px; display: block; padding-left: 19px; }
         
-        .input-group { background: #fdfdfd; padding: 15px; border-radius: 12px; border: 1px solid #eee; margin-bottom: 20px; transition: 0.3s; }
+        .input-group { background: #fdfdfd; padding: 12px; border-radius: 10px; border: 1px solid #eee; margin-bottom: 15px; transition: 0.3s; }
         .input-group:hover { border-color: var(--accent); }
         
-        .price-card { background: var(--primary); color: white; position: sticky; top: 20px; display: flex; flex-direction: column; justify-content: center; text-align: center; }
-        .total-label { font-size: 1.1em; opacity: 0.8; }
-        .total-price { font-size: 3.5em; font-weight: 700; color: var(--accent); margin: 10px 0; }
-        .savings-badge { background: rgba(212, 175, 55, 0.2); color: var(--accent); padding: 8px 15px; border-radius: 50px; font-weight: 600; display: inline-block; }
+        .price-card { background: var(--primary); color: white; position: sticky; top: 20px; text-align: center; }
+        .total-price { font-size: 3.5em; font-weight: 700; color: var(--accent); margin: 5px 0; }
+        .savings-badge { background: rgba(212, 175, 55, 0.2); color: var(--accent); padding: 5px 15px; border-radius: 50px; font-weight: 600; font-size: 0.9em; }
         
-        ul.summary-list { text-align: left; padding: 0; list-style: none; margin: 20px 0; font-size: 0.95em; }
-        ul.summary-list li::before { content: "✓"; color: var(--accent); margin-right: 10px; font-weight: bold; }
+        ul.summary-list { text-align: left; padding: 0; list-style: none; margin: 20px 0; font-size: 0.9em; }
+        ul.summary-list li::before { content: "✓"; color: var(--accent); margin-right: 10px; }
 
-        .admin-panel { display: none; margin-top: 30px; background: #333; color: white; padding: 20px; border-radius: 10px; }
-        input[type="number"], select { padding: 8px; border-radius: 5px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; }
+        .admin-panel { display: none; margin-top: 30px; background: #333; color: white; padding: 20px; border-radius: 10px; font-size: 0.8em; }
+        input[type="number"], select { padding: 8px; border-radius: 5px; border: 1px solid #ddd; width: 100%; box-sizing: border-box; margin-top: 5px; }
         
-        @media (max-width: 850px) { .configurator { grid-template-columns: 1fr; } .price-card { position: relative; top: 0; } }
+        .specials-card { border: 2px solid var(--accent); background: #fffcf5; }
+
+        @media (max-width: 850px) { .configurator { grid-template-columns: 1fr; } .price-card { position: relative; } }
     </style>
 </head>
 <body>
 
 <div class="wrapper">
     <header>
-        <h1>Business360 Service Configurator</h1>
-        <p>Stel uw ideale pakket samen en ontdek uw voordeel <span class="admin-trigger" onclick="openAdmin()">⚙️</span></p>
+        <h1>Business360 Configurator</h1>
+        <p>Stel uw operationele team samen <span class="admin-trigger" onclick="openAdmin()">⚙️</span></p>
     </header>
 
     <div class="configurator">
         <div class="card">
-            <div class="section-title">Finance & Liaison</div>
-            <span class="service-desc">Kies hoe wij uw administratie ondersteunen. Wij kunnen uw interface zijn richting uw huidige boekhouder, of alles zelf doen.</span>
+            
+            <div class="section-title">1. Core Operations</div>
+            <span class="service-desc">Klantenservice, ticketing en backoffice management.</span>
+            <div class="input-group">
+                <input type="checkbox" id="c_ops" onchange="calc()"> <b>Klantenservice & Support Team</b>
+            </div>
+
+            <div class="section-title">2. Finance & Liaison</div>
+            <span class="service-desc">Beheer van administratie en de interface met uw boekhouder.</span>
             <div class="input-group">
                 <select id="fin_select" onchange="calc()">
-                    <option value="liaison">Secretariaat & Liaison (U behoudt uw boekhouder)</option>
-                    <option value="full">Volledige Boekhouding & Accountancy</option>
-                    <option value="none">Geen administratieve ondersteuning</option>
+                    <option value="none">Geen financiële diensten</option>
+                    <option value="liaison">Secretariaat & Liaison Service</option>
+                    <option value="full">Volledige Boekhouding Business360</option>
                 </select>
             </div>
 
-            <div class="section-title">Legal & Compliance</div>
-            <span class="service-desc">Bescherm uw onderneming met onbeperkt advies en toegang tot alle essentiële contracten.</span>
+            <div class="section-title">3. Safety & Legal</div>
+            <span class="service-desc">Contracten, HR-ondersteuning en Recruitment.</span>
             <div class="input-group">
-                <input type="checkbox" id="legal_check" onchange="calc()"> <b>Legal Support Pakket</b>
+                <input type="checkbox" id="c_legal" onchange="calc()"> <b>Legal & Contractbeheer</b><br>
+                <input type="checkbox" id="c_hr" onchange="calc()"> <b>HR & Recruitment Support</b>
             </div>
 
-            <div class="section-title">Debt Recovery (Incasso)</div>
-            <span class="service-desc">Zorg voor een gezonde cashflow. Onbeperkt minnelijke incasso zonder dossierkosten.</span>
+            <div class="section-title">4. Tech & Digital</div>
+            <span class="service-desc">IT-beheer, Webdesign en Webshop onderhoud.</span>
             <div class="input-group">
-                <input type="checkbox" id="debt_check" onchange="calc()"> <b>Onbeperkt Incasso Service</b>
+                <input type="checkbox" id="c_it" onchange="calc()"> <b>Managed IT & Security</b><br>
+                <input type="checkbox" id="c_web" onchange="calc()"> <b>Webdesign & Webshop Onderhoud</b>
             </div>
 
-            <div class="section-title">Human Capital (HR)</div>
-            <span class="service-desc">Salarisadministratie en verzuimbegeleiding per medewerker.</span>
-            <div class="input-group">
-                Aantal medewerkers: <input type="number" id="staff_count" value="0" min="0" oninput="calc()">
+            <div class="section-title">5. Strategic Specials</div>
+            <span class="service-desc">Interim management en reorganisatie trajecten.</span>
+            <div class="input-group specials-card">
+                <input type="checkbox" id="c_specials" onchange="calc()"> <b>Interim / Reorganisatie / Problem Solving</b><br>
+                <small>(Op aanvraag, indicatie wordt getoond)</small>
             </div>
         </div>
 
         <div class="card price-card">
-            <span class="total-label">Uw persoonlijke 360-tarief</span>
+            <span style="opacity:0.8">Maandelijks Investering</span>
             <div class="total-price" id="total_price">€0</div>
-            <div id="savings_area">
-                <span class="savings-badge" id="savings_val">Bespaar €0 per maand</span>
-            </div>
-            <ul class="summary-list" id="summary_list">
-                </ul>
-            <button style="background: var(--accent); border: none; padding: 15px; border-radius: 10px; color: var(--primary); font-weight: 700; cursor: pointer;">Vraag Direct Aan</button>
+            <span class="savings-badge" id="savings_val">Besparing: €0 p/m</span>
+            <ul class="summary-list" id="summary_list"></ul>
+            <button style="background: var(--accent); border: none; width:100%; padding: 15px; border-radius: 10px; color: var(--primary); font-weight: 700; cursor: pointer;">START CONFIGURATIE</button>
         </div>
     </div>
 
     <div id="admin_panel" class="admin-panel">
-        <h3>Prijsinstellingen (Interne Calculatie)</h3>
+        <h3>Admin Prijsinstellingen</h3>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <div>Liaison Maandprijs: <input type="number" id="p_liaison" value="99" oninput="calc()"></div>
+            <div>Ops/Klantenservice: <input type="number" id="p_ops" value="149" oninput="calc()"></div>
+            <div>Liaison Service: <input type="number" id="p_liaison" value="99" oninput="calc()"></div>
             <div>Full Accounting: <input type="number" id="p_full" value="199" oninput="calc()"></div>
-            <div>Legal Pakket: <input type="number" id="p_legal" value="149" oninput="calc()"></div>
-            <div>Incasso Pakket: <input type="number" id="p_debt" value="49" oninput="calc()"></div>
-            <div>HR p.p. maand: <input type="number" id="p_hr" value="15" oninput="calc()"></div>
+            <div>Legal: <input type="number" id="p_legal" value="125" oninput="calc()"></div>
+            <div>HR/Recruitment: <input type="number" id="p_hr" value="89" oninput="calc()"></div>
+            <div>IT Managed: <input type="number" id="p_it" value="75" oninput="calc()"></div>
+            <div>Web/Shop Onderhoud: <input type="number" id="p_web" value="119" oninput="calc()"></div>
+            <div>Specials (Surcharge): <input type="number" id="p_specials" value="500" oninput="calc()"></div>
         </div>
     </div>
 </div>
 
 <script>
     function openAdmin() {
-        let p = prompt("Admin Wachtwoord:");
-        if(p === "360") document.getElementById('admin_panel').style.display = 'block';
+        if(prompt("Wachtwoord:") === "360") document.getElementById('admin_panel').style.display = 'block';
     }
 
     function calc() {
-        // Admin prijzen ophalen
-        let prices = {
+        let p = {
+            ops: parseInt(document.getElementById('p_ops').value),
             liaison: parseInt(document.getElementById('p_liaison').value),
             full: parseInt(document.getElementById('p_full').value),
             legal: parseInt(document.getElementById('p_legal').value),
-            debt: parseInt(document.getElementById('p_debt').value),
-            hr: parseInt(document.getElementById('p_hr').value)
+            hr: parseInt(document.getElementById('p_hr').value),
+            it: parseInt(document.getElementById('p_it').value),
+            web: parseInt(document.getElementById('p_web').value),
+            specials: parseInt(document.getElementById('p_specials').value)
         };
 
-        let total = 0;
-        let market = 0;
-        let activeItems = [];
+        let total = 0; let market = 0; let list = [];
 
-        // Logic Finance
-        let fin = document.getElementById('fin_select').value;
-        if(fin === 'liaison') {
-            total += prices.liaison; market += 150; activeItems.push("Secretariaat & Liaison Service");
-        } else if (fin === 'full') {
-            total += prices.full; market += 320; activeItems.push("Volledige Boekhouding");
-        }
-
-        // Logic Legal
-        if(document.getElementById('legal_check').checked) {
-            total += prices.legal; market += 450; activeItems.push("Onbeperkt Legal Support");
-        }
-
-        // Logic Debt
-        if(document.getElementById('debt_check').checked) {
-            total += prices.debt; market += 120; activeItems.push("Professional Incasso");
-        }
-
-        // Logic HR
-        let staff = parseInt(document.getElementById('staff_count').value) || 0;
-        if(staff > 0) {
-            total += (staff * prices.hr); market += (staff * 25);
-            activeItems.push("HR Support (" + staff + " medewerkers)");
-        }
-
-        // Render
-        document.getElementById('total_price').innerText = "€" + total;
-        let savings = market - total;
-        document.getElementById('savings_val').innerText = "Bespaar ± €" + (savings > 0 ? savings : 0) + " per maand";
+        if(document.getElementById('c_ops').checked) { total += p.ops; market += 250; list.push("Core Operations"); }
         
-        let listHtml = activeItems.map(item => `<li>${item}</li>`).join('');
-        document.getElementById('summary_list').innerHTML = listHtml || "<li>Nog geen diensten gekozen</li>";
+        let fin = document.getElementById('fin_select').value;
+        if(fin === 'liaison') { total += p.liaison; market += 150; list.push("Liaison Service"); }
+        else if(fin === 'full') { total += p.full; market += 300; list.push("Full Accounting"); }
+
+        if(document.getElementById('c_legal').checked) { total += p.legal; market += 200; list.push("Legal Support"); }
+        if(document.getElementById('c_hr').checked) { total += p.hr; market += 150; list.push("HR & Recruitment"); }
+        if(document.getElementById('c_it').checked) { total += p.it; market += 120; list.push("Managed IT"); }
+        if(document.getElementById('c_web').checked) { total += p.web; market += 250; list.push("Web & Shop Beheer"); }
+        if(document.getElementById('c_specials').checked) { total += p.specials; market += 1000; list.push("Strategic Specials"); }
+
+        document.getElementById('total_price').innerText = "€" + total;
+        document.getElementById('savings_val').innerText = "Besparing: ± €" + (market - total) + " p/m";
+        document.getElementById('summary_list').innerHTML = list.map(i => `<li>${i}</li>`).join('') || "Selecteer uw diensten";
     }
     calc();
 </script>
